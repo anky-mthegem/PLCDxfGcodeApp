@@ -139,8 +139,13 @@
                     
                     <Button Content="🔗 Connect to PLC" Margin="0,15,0,10" Click="ConnectToPLC_Click" Style="{StaticResource SuccessButton}"/>
                     
-                    <Border Background="#FFEBEE" CornerRadius="6" Padding="10,8" Margin="0,5">
+                    <Border Background="#FFEBEE" CornerRadius="6" Padding="10,8" Margin="0,5,0,20">
                         <TextBlock x:Name="ConnectionStatus" Text="● Status: Disconnected" FontSize="12" FontWeight="SemiBold" Foreground="#D32F2F"/>
+                    </Border>
+                    
+                    <!-- Logo -->
+                    <Border BorderBrush="#2196F3" BorderThickness="2" CornerRadius="8" Padding="8" Background="#E3F2FD" HorizontalAlignment="Center" Width="140" Height="140">
+                        <Image Source="/logo.png" Stretch="Uniform"/>
                     </Border>
                 </StackPanel>
             </Border>
