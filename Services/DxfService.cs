@@ -60,6 +60,11 @@ namespace PLCDxfGcodeApp.Services
         {
             return _currentModel;
         }
+        
+        public DxfModel GetCurrentDxf()
+        {
+            return _currentModel;
+        }
 
         private DxfModel ConvertDxfToModel(DxfDocument dxfDocument, string filePath)
         {
@@ -71,12 +76,91 @@ namespace PLCDxfGcodeApp.Services
                 Entities = new List<Entity>()
             };
 
-            // For now, create a simple model
-            // netDxf DrawingEntities collection may not be directly enumerable in some versions
-            // Simplified: netDxf DrawingEntities doesn't enumerate properly in all .NET versions
-            // In a production app, you would properly iterate through dxfDocument.Entities
-            // For now, return the empty model - entity conversion can be added when netDxf is properly configured
-            model.Entities.Add(new Entity { Type = "Line", Points = new List<Models.Point>() });
+            try
+            {
+                // Extract Lines
+                if (dxfDocument.Entities != null && dxfDocument.Entities.Lines != null)
+                {
+                    foreach (var line in dxfDocument.Entities.Lines)
+                    {
+                        var entity = new Entity { Type = "Line", Points = new List<Models.Point>() };
+                        entity.Points.Add(new Models.Point { X = line.StartPoint.X, Y = line.StartPoint.Y, Z = line.StartPoint.Z });
+                        entity.Points.Add(new Models.Point { X = line.EndPoint.X, Y = line.EndPoint.Y, Z = line.EndPoint.Z });
+                        model.Entities.Add(entity);
+                    }
+                }
+
+                // Extract Circles
+                if (dxfDocument.Entities != null && dxfDocument.Entities.Circles != null)
+                {
+                    foreach (var circle in dxfDocument.Entities.Circles)
+                    {
+                        var entity = new Entity 
+                        { 
+                            Type = "Circle", 
+                            Points = new List<Models.Point>(),
+                            Radius = circle.Radius
+                        };
+                        entity.Points.Add(new Models.Point { X = circle.Center.X, Y = circle.Center.Y, Z = circle.Center.Z });
+                        model.Entities.Add(entity);
+                    }
+                }
+
+                // Extract Arcs
+                if (dxfDocument.Entities != null && dxfDocument.Entities.Arcs != null)
+                {
+                    foreach (var arc in dxfDocument.Entities.Arcs)
+                    {
+                        var entity = new Entity 
+                        { 
+                            Type = "Arc", 
+                            Points = new List<Models.Point>(),
+                            Radius = arc.Radius,
+                            StartAngle = arc.StartAngle,
+                            EndAngle = arc.EndAngle
+                        };
+                        entity.Points.Add(new Models.Point { X = arc.Center.X, Y = arc.Center.Y, Z = arc.Center.Z });
+                        
+                        // Add start and end points for visualization
+                        double startRad = arc.StartAngle * Math.PI / 180;
+                        double endRad = arc.EndAngle * Math.PI / 180;
+                        entity.Points.Add(new Models.Point 
+                        { 
+                            X = arc.Center.X + arc.Radius * Math.Cos(startRad), 
+                            Y = arc.Center.Y + arc.Radius * Math.Sin(startRad), 
+                            Z = arc.Center.Z 
+                        });
+                        entity.Points.Add(new Models.Point 
+                        { 
+                            X = arc.Center.X + arc.Radius * Math.Cos(endRad), 
+                            Y = arc.Center.Y + arc.Radius * Math.Sin(endRad), 
+                            Z = arc.Center.Z 
+                        });
+                        model.Entities.Add(entity);
+                    }
+                }
+
+                // Extract Polylines
+                if (dxfDocument.Entities != null && dxfDocument.Entities.Polylines2D != null)
+                {
+                    foreach (var polyline in dxfDocument.Entities.Polylines2D)
+                    {
+                        var entity = new Entity { Type = "LwPolyline", Points = new List<Models.Point>() };
+                        foreach (var vertex in polyline.Vertexes)
+                        {
+                            entity.Points.Add(new Models.Point { X = vertex.Position.X, Y = vertex.Position.Y, Z = 0 });
+                        }
+                        if (entity.Points.Count > 0)
+                            model.Entities.Add(entity);
+                    }
+                }
+
+                Console.WriteLine("Loaded DXF: " + model.Entities.Count + " entities");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error converting DXF entities: " + ex.Message);
+            }
 
             return model;
         }

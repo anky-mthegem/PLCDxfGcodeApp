@@ -4,69 +4,277 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="PLC DXF G-Code Application" Height="800" Width="1200"
-        WindowStartupLocation="CenterScreen">
-    <Grid Background="#F0F0F0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="300"/>
-        </Grid.ColumnDefinitions>
+        Title="PLC DXF G-Code Generator Pro" Height="850" Width="1400"
+        WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip">
+    
+    <Window.Resources>
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#2196F3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="6" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1976D2"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#0D47A1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
-        <!-- Left Panel: File Operations -->
-        <StackPanel Grid.Column="0" Margin="10" Background="White" VerticalAlignment="Top">
-            <TextBlock Text="File Operations" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            
-            <Button Content="Open DXF File" Padding="10" Margin="0,5" Click="OpenDxfFile_Click"/>
-            <Button Content="Save G-Code" Padding="10" Margin="0,5" Click="SaveGCode_Click"/>
-            <Button Content="New File" Padding="10" Margin="0,5" Click="NewFile_Click"/>
-            
-            <Separator Margin="0,10"/>
-            
-            <TextBlock Text="PLC Connection" FontSize="14" FontWeight="Bold" Margin="0,10,0,10"/>
-            <TextBlock Text="IP Address:" Margin="0,5"/>
-            <TextBox x:Name="PLCIpTextBox" Padding="5" Text="192.168.1.100"/>
-            
-            <TextBlock Text="Rack:" Margin="0,10,0,5"/>
-            <TextBox x:Name="PLCRackTextBox" Padding="5" Text="0"/>
-            
-            <TextBlock Text="Slot:" Margin="0,10,0,5"/>
-            <TextBox x:Name="PLCSlotTextBox" Padding="5" Text="1"/>
-            
-            <Button Content="Connect to PLC" Padding="10" Margin="0,15" Click="ConnectToPLC_Click"/>
-            <TextBlock x:Name="ConnectionStatus" Text="Status: Disconnected" Margin="0,5" Foreground="Red"/>
-        </StackPanel>
+        <!-- Success Button Style -->
+        <Style x:Key="SuccessButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#4CAF50"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#388E3C"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#1B5E20"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
-        <!-- Center Panel: DXF Viewer -->
-        <StackPanel Grid.Column="1" Margin="10">
-            <TextBlock Text="DXF Editor" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <Border BorderBrush="Black" BorderThickness="1" Background="White" Height="600">
-                <Canvas x:Name="DxfCanvas" Background="White"/>
+        <!-- Modern TextBox Style -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="BorderBrush" Value="#BDBDBD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#2196F3"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Modern CheckBox Style -->
+        <Style x:Key="ModernCheckBox" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#424242"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Main Content -->
+        <Grid Grid.Row="0" Background="#ECEFF1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="340"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Panel: File Operations -->
+            <Border Grid.Column="0" Margin="10" Background="White" CornerRadius="10">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="15" ShadowDepth="3" Opacity="0.2"/>
+                </Border.Effect>
+                <StackPanel Margin="15" VerticalAlignment="Top">
+                    <TextBlock Text="📁 File Operations" FontSize="18" FontWeight="Bold" Margin="0,0,0,15" Foreground="#1976D2"/>
+                    
+                    <Button Content="📂 Open DXF File" Margin="0,5" Click="OpenDxfFile_Click" Style="{StaticResource ModernButton}"/>
+                    <Button Content="💾 Save G-Code" Margin="0,5" Click="SaveGCode_Click" Style="{StaticResource ModernButton}"/>
+                    <Button Content="📄 New File" Margin="0,5" Click="NewFile_Click" Style="{StaticResource ModernButton}"/>
+                    
+                    <Rectangle Fill="#E0E0E0" Height="1" Margin="0,20,0,15"/>
+                    
+                    <TextBlock Text="🔌 PLC Connection" FontSize="16" FontWeight="Bold" Margin="0,0,0,15" Foreground="#1976D2"/>
+                    
+                    <TextBlock Text="IP Address:" Margin="0,8,0,4" FontSize="12" Foreground="#616161"/>
+                    <TextBox x:Name="PLCIpTextBox" Text="192.168.1.100" Style="{StaticResource ModernTextBox}"/>
+                    
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Rack:" FontSize="12" Foreground="#616161" Margin="0,0,0,4"/>
+                            <TextBox x:Name="PLCRackTextBox" Text="0" Style="{StaticResource ModernTextBox}"/>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Slot:" FontSize="12" Foreground="#616161" Margin="0,0,0,4"/>
+                            <TextBox x:Name="PLCSlotTextBox" Text="1" Style="{StaticResource ModernTextBox}"/>
+                        </StackPanel>
+                    </Grid>
+                    
+                    <Button Content="🔗 Connect to PLC" Margin="0,15,0,10" Click="ConnectToPLC_Click" Style="{StaticResource SuccessButton}"/>
+                    
+                    <Border Background="#FFEBEE" CornerRadius="6" Padding="10,8" Margin="0,5">
+                        <TextBlock x:Name="ConnectionStatus" Text="● Status: Disconnected" FontSize="12" FontWeight="SemiBold" Foreground="#D32F2F"/>
+                    </Border>
+                </StackPanel>
             </Border>
-            <TextBlock x:Name="DxfInfoTextBlock" Text="No file loaded" Margin="0,10" Foreground="Gray"/>
-        </StackPanel>
 
-        <!-- Right Panel: G-Code Generation -->
-        <StackPanel Grid.Column="2" Margin="10" Background="White" VerticalAlignment="Stretch">
-            <TextBlock Text="G-Code Settings" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
-            
-            <TextBlock Text="Feed Rate (mm/min):" Margin="0,5"/>
-            <TextBox x:Name="FeedRateTextBox" Padding="5" Text="100"/>
-            
-            <TextBlock Text="Spindle Speed (RPM):" Margin="0,10,0,5"/>
-            <TextBox x:Name="SpindleSpeedTextBox" Padding="5" Text="1000"/>
-            
-            <TextBlock Text="Tool Diameter (mm):" Margin="0,10,0,5"/>
-            <TextBox x:Name="ToolDiameterTextBox" Padding="5" Text="3"/>
-            
-            <Button Content="Generate G-Code" Padding="10" Margin="0,15" Click="GenerateGCode_Click"/>
-            
-            <Separator Margin="0,10"/>
-            
-            <TextBlock Text="G-Code Preview:" FontSize="12" FontWeight="Bold" Margin="0,10,0,5"/>
-            <TextBox x:Name="GCodeTextBox" Padding="5" Height="400" VerticalAlignment="Stretch" 
-                     AcceptsReturn="True" IsReadOnly="True" VerticalScrollBarVisibility="Auto" 
-                     FontFamily="Courier New" FontSize="10"/>
-        </StackPanel>
+            <!-- Center Panel: DXF Viewer -->
+            <Border Grid.Column="1" Margin="10" Background="White" CornerRadius="10">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="15" ShadowDepth="3" Opacity="0.2"/>
+                </Border.Effect>
+                <Grid Margin="15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Text="🎨 DXF Editor" FontSize="18" FontWeight="Bold" Margin="0,0,0,15" Foreground="#1976D2"/>
+                    
+                    <Border Grid.Row="1" BorderBrush="#BDBDBD" BorderThickness="2" CornerRadius="6" Background="#FAFAFA">
+                        <Canvas x:Name="DxfCanvas" Background="White"/>
+                    </Border>
+                    
+                    <Border Grid.Row="2" Background="#E3F2FD" CornerRadius="6" Padding="12,8" Margin="0,15,0,0">
+                        <TextBlock x:Name="DxfInfoTextBlock" Text="📄 No file loaded" FontSize="13" Foreground="#1565C0"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Right Panel: G-Code Generation -->
+            <Border Grid.Column="2" Margin="10" Background="White" CornerRadius="10">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="15" ShadowDepth="3" Opacity="0.2"/>
+                </Border.Effect>
+                <Grid Margin="15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Text="⚙️ G-Code Settings" FontSize="18" FontWeight="Bold" Margin="0,0,0,15" Foreground="#1976D2"/>
+                    
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <!-- Basic Settings -->
+                            <Border Background="#F5F5F5" CornerRadius="8" Padding="12" Margin="0,0,0,15">
+                                <StackPanel>
+                                    <TextBlock Text="Basic Parameters" FontSize="14" FontWeight="Bold" Foreground="#424242" Margin="0,0,0,10"/>
+                                    
+                                    <TextBlock Text="Feed Rate (mm/min):" FontSize="12" Foreground="#616161" Margin="0,5,0,4"/>
+                                    <TextBox x:Name="FeedRateTextBox" Text="100" Style="{StaticResource ModernTextBox}"/>
+                                    
+                                    <TextBlock Text="Spindle Speed (RPM):" FontSize="12" Foreground="#616161" Margin="0,10,0,4"/>
+                                    <TextBox x:Name="SpindleSpeedTextBox" Text="1000" Style="{StaticResource ModernTextBox}"/>
+                                    
+                                    <TextBlock Text="Tool Diameter (mm):" FontSize="12" Foreground="#616161" Margin="0,10,0,4"/>
+                                    <TextBox x:Name="ToolDiameterTextBox" Text="3" Style="{StaticResource ModernTextBox}"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Path Offsetting -->
+                            <Border Background="#E8F5E9" CornerRadius="8" Padding="12" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock Text="🔧 Path Offsetting" FontSize="13" FontWeight="Bold" Foreground="#2E7D32" Margin="0,0,0,8"/>
+                                    <CheckBox x:Name="EnablePathOffsetCheckBox" Content="Enable Tool Compensation" Style="{StaticResource ModernCheckBox}" Margin="0,4"/>
+                                    <TextBlock Text="Offset Amount (mm):" FontSize="11" Foreground="#616161" Margin="0,8,0,4"/>
+                                    <TextBox x:Name="PathOffsetAmountTextBox" Text="1.5" Style="{StaticResource ModernTextBox}"/>
+                                    <CheckBox x:Name="OffsetInwardCheckBox" Content="Offset Inward" IsChecked="True" Style="{StaticResource ModernCheckBox}" Margin="0,8,0,4"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Pocket Generation -->
+                            <Border Background="#FFF3E0" CornerRadius="8" Padding="12" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock Text="🏝️ Pocket Generation" FontSize="13" FontWeight="Bold" Foreground="#E65100" Margin="0,0,0,8"/>
+                                    <CheckBox x:Name="EnablePocketCheckBox" Content="Enable Pocket Filling" Style="{StaticResource ModernCheckBox}" Margin="0,4"/>
+                                    <TextBlock Text="Stepover (mm):" FontSize="11" Foreground="#616161" Margin="0,8,0,4"/>
+                                    <TextBox x:Name="PocketStepoverTextBox" Text="2.0" Style="{StaticResource ModernTextBox}"/>
+                                    <CheckBox x:Name="DetectIslandsCheckBox" Content="Detect Islands" Style="{StaticResource ModernCheckBox}" Margin="0,8,0,4"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Multi-Pass -->
+                            <Border Background="#F3E5F5" CornerRadius="8" Padding="12" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock Text="📏 Multi-Pass Cutting" FontSize="13" FontWeight="Bold" Foreground="#6A1B9A" Margin="0,0,0,8"/>
+                                    <CheckBox x:Name="EnableMultiPassCheckBox" Content="Enable Multiple Passes" Style="{StaticResource ModernCheckBox}" Margin="0,4"/>
+                                    <TextBlock Text="Total Depth (mm):" FontSize="11" Foreground="#616161" Margin="0,8,0,4"/>
+                                    <TextBox x:Name="TotalDepthTextBox" Text="10.0" Style="{StaticResource ModernTextBox}"/>
+                                    <TextBlock Text="Depth Per Pass (mm):" FontSize="11" Foreground="#616161" Margin="0,8,0,4"/>
+                                    <TextBox x:Name="DepthPerPassTextBox" Text="2.0" Style="{StaticResource ModernTextBox}"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Spline Conversion -->
+                            <Border Background="#E1F5FE" CornerRadius="8" Padding="12" Margin="0,0,0,15">
+                                <StackPanel>
+                                    <TextBlock Text="🌀 Spline Conversion" FontSize="13" FontWeight="Bold" Foreground="#01579B" Margin="0,0,0,8"/>
+                                    <CheckBox x:Name="ConvertSplinesCheckBox" Content="Convert Splines to Arcs" Style="{StaticResource ModernCheckBox}" Margin="0,4"/>
+                                    <TextBlock Text="Arc Tolerance (mm):" FontSize="11" Foreground="#616161" Margin="0,8,0,4"/>
+                                    <TextBox x:Name="ArcToleranceTextBox" Text="0.01" Style="{StaticResource ModernTextBox}"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <Button Content="⚡ Generate G-Code" Margin="0,10,0,15" Click="GenerateGCode_Click" 
+                                    Style="{StaticResource SuccessButton}" FontSize="15" Padding="15,12"/>
+                            
+                            <TextBlock Text="📋 G-Code Preview" FontSize="13" FontWeight="Bold" Foreground="#424242" Margin="0,0,0,8"/>
+                            <Border BorderBrush="#BDBDBD" BorderThickness="1" CornerRadius="6" Background="#FAFAFA">
+                                <TextBox x:Name="GCodeTextBox" Height="180" AcceptsReturn="True" IsReadOnly="True" 
+                                         VerticalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="10" 
+                                         Background="Transparent" BorderThickness="0" Padding="8"/>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="#263238" Padding="15,12">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <Image Source="logo.png" Height="24" Width="24" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBlock VerticalAlignment="Center" Foreground="#B0BEC5" FontSize="11">
+                        <Run Text="© 2026 PLC DXF G-Code Generator Pro"/>
+                        <Run Text="•" Foreground="#546E7A"/>
+                        <Run Text="Advanced CNC Toolpath Generator"/>
+                    </TextBlock>
+                </StackPanel>
+                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#90A4AE" FontSize="11">
+                    <Run Text="📧"/>
+                    <Run Text="anky_mthegem2@yahoo.co.uk" Foreground="#64B5F6"/>
+                </TextBlock>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

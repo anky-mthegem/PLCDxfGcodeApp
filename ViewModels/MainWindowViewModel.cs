@@ -107,6 +107,54 @@ namespace PLCDxfGcodeApp.ViewModels
         }
     }
 
+    public string GenerateGCodeAdvanced(
+        double feedRate, int spindleSpeed, double toolDiameter,
+        bool enablePathOffset, double pathOffsetAmount, bool offsetInward,
+        bool enablePocket, double pocketStepover, bool detectIslands,
+        bool enableMultiPass, double totalDepth, double depthPerPass,
+        bool convertSplines, double arcTolerance)
+    {
+        try
+        {
+            if (_currentDxfModel == null)
+                throw new InvalidOperationException("No DXF file loaded");
+
+            var settings = new GcodeModel
+            {
+                FeedRate = feedRate,
+                SpindleSpeed = spindleSpeed,
+                ToolDiameter = toolDiameter,
+                
+                EnablePathOffset = enablePathOffset,
+                PathOffsetAmount = pathOffsetAmount,
+                OffsetInward = offsetInward,
+                
+                EnablePocketGeneration = enablePocket,
+                PocketStepover = pocketStepover,
+                DetectIslands = detectIslands,
+                
+                EnableMultiPass = enableMultiPass,
+                TotalDepth = totalDepth,
+                DepthPerPass = depthPerPass,
+                
+                ConvertSplinesToArcs = convertSplines,
+                ArcTolerance = arcTolerance,
+                
+                Template = new GcodeTemplate()
+            };
+
+            string gcode = _gcodeService.GenerateGCodeAdvanced(_currentDxfModel, settings);
+            _currentGcodeModel = settings;
+            StatusMessage = "G-Code generated with advanced features";
+            return gcode;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = "Error: " + ex.Message;
+            throw;
+        }
+    }
+
     public void SendGCodeToPLC(string gcode)
     {
         try

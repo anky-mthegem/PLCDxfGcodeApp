@@ -16,6 +16,9 @@ namespace PLCDxfGcodeApp.Models
         public string Type { get; set; } = string.Empty;
         public List<Point> Points { get; set; } = new List<Point>();
         public string Layer { get; set; }
+        public double Radius { get; set; }
+        public double StartAngle { get; set; }
+        public double EndAngle { get; set; }
     }
 
     public class Point

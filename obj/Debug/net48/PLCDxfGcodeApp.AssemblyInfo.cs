@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute(("Windows application for Siemens S7-1500 PLC communication with DXF editing and G-" +
     "code generation"))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+03467a993ebb85078a0759b85477121d09ec34a1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c1766e4c7dc57b4a4a8e6760e34e4b7b8bce2f64")]
 [assembly: System.Reflection.AssemblyProductAttribute("PLCDxfGcodeApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PLCDxfGcodeApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
