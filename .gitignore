@@ -1,26 +1,5 @@
-# Build results
-bin/
-obj/
-*.dll
-*.exe
-*.pdb
-*.cache
-*.config
-
-# User-specific files
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-
-# Visual Studio cache/options
-.vs/
-
-# NuGet
-*.nupkg
-*.snupkg
-
 # IDE
+.vs/
 .vscode/
 .idea/
 

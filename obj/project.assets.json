@@ -1,0 +1,130 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETFramework,Version=v4.8": {
+      "netDxf/3.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net48/netDxf.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net48/netDxf.dll": {
+            "related": ".xml"
+          }
+        }
+      }
+    },
+    ".NETFramework,Version=v4.8/win-x86": {
+      "netDxf/3.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net48/netDxf.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net48/netDxf.dll": {
+            "related": ".xml"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "netDxf/3.0.1": {
+      "sha512": "ylzroT8MYFqIzMklg9TtFJANxvezOEuyEpVntlLLZs6LSRkJ3iF8sHcliwoaCHkfSw3blJGurShr6JpMeWjKhA==",
+      "type": "package",
+      "path": "netdxf/3.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net48/netDxf.dll",
+        "lib/net48/netDxf.xml",
+        "lib/net6.0/netDxf.dll",
+        "lib/net6.0/netDxf.xml",
+        "netdxf.3.0.1.nupkg.sha512",
+        "netdxf.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETFramework,Version=v4.8": [
+      "netDxf >= 2.16.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\anky_\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\anky_\\Downloads\\Gcode with siemens PLC\\VSCODE\\PLCDxfGcodeApp\\PLCDxfGcodeApp.csproj",
+      "projectName": "PLCDxfGcodeApp",
+      "projectPath": "C:\\Users\\anky_\\Downloads\\Gcode with siemens PLC\\VSCODE\\PLCDxfGcodeApp\\PLCDxfGcodeApp.csproj",
+      "packagesPath": "C:\\Users\\anky_\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\anky_\\Downloads\\Gcode with siemens PLC\\VSCODE\\PLCDxfGcodeApp\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\anky_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net48"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net48": {
+          "targetAlias": "net48",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "10.0.100"
+    },
+    "frameworks": {
+      "net48": {
+        "targetAlias": "net48",
+        "dependencies": {
+          "netDxf": {
+            "target": "Package",
+            "version": "[2.16.0, )"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102\\RuntimeIdentifierGraph.json"
+      }
+    },
+    "runtimes": {
+      "win-x86": {
+        "#import": []
+      }
+    }
+  },
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "PLCDxfGcodeApp depends on netDxf (>= 2.16.0) but netDxf 2.16.0 was not found. netDxf 3.0.1 was resolved instead.",
+      "libraryId": "netDxf",
+      "targetGraphs": [
+        ".NETFramework,Version=v4.8",
+        ".NETFramework,Version=v4.8/win-x86"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "dgSpecHash": "3NYOfuOb8Cg=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\anky_\\Downloads\\Gcode with siemens PLC\\VSCODE\\PLCDxfGcodeApp\\PLCDxfGcodeApp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\anky_\\.nuget\\packages\\netdxf\\3.0.1\\netdxf.3.0.1.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "message": "PLCDxfGcodeApp depends on netDxf (>= 2.16.0) but netDxf 2.16.0 was not found. netDxf 3.0.1 was resolved instead.",
+      "projectPath": "C:\\Users\\anky_\\Downloads\\Gcode with siemens PLC\\VSCODE\\PLCDxfGcodeApp\\PLCDxfGcodeApp.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\anky_\\Downloads\\Gcode with siemens PLC\\VSCODE\\PLCDxfGcodeApp\\PLCDxfGcodeApp.csproj",
+      "libraryId": "netDxf",
+      "targetGraphs": [
+        ".NETFramework,Version=v4.8",
+        ".NETFramework,Version=v4.8/win-x86"
+      ]
+    }
+  ]
+}
