@@ -1,0 +1,18 @@
+- [x] Create project structure and folders
+- [x] Set up WPF application with MVVM architecture
+- [x] Implement Models (DxfModel, GcodeModel, PLCModel)
+- [x] Create Services:
+  - [x] DxfService for file handling (using netDxf)
+  - [x] GcodeService for G-code generation
+  - [x] PLCService for Siemens S7-1500 communication (using Snap7)
+- [x] Implement MainWindowViewModel with MVVM pattern
+- [x] Design professional WPF UI with MainWindow
+- [x] Add NuGet dependencies:
+  - [x] netDxf 2.16.0
+  - [x] Snap7 1.4.2
+  - [x] MvvmLight 5.4.1.1
+- [ ] Build and compile the project
+- [ ] Add DXF canvas visualization
+- [ ] Implement error handling and logging
+- [ ] Add unit tests
+- [ ] Create user documentation
